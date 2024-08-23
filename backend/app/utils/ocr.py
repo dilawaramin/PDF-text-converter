@@ -11,6 +11,11 @@ def perform_ocr_on_directory(directory_path):
 
     :param directory_path: The path to the directory containing image files.
     """
+    # Create a subdirectory for json files
+    json_output_dir = os.path.join(directory_path, 'json_results')
+    if not os.path.exists(json_output_dir):
+        os.makedirs(json_output_dir)
+    
     # Loop through all files in the directory
     for filename in os.listdir(directory_path):
         # Construct full file path
@@ -82,7 +87,7 @@ def perform_ocr_on_directory(directory_path):
             
             # Define the output JSON file name
             output_filename = f"{os.path.splitext(filename)[0]}.json"
-            output_json_file = os.path.join(directory_path, output_filename)
+            output_json_file = os.path.join(json_output_dir, output_filename)
             
             # Write the JSON data to a file
             with open(output_json_file, 'w', encoding='utf-8') as json_file:
