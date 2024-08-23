@@ -23,7 +23,6 @@ def perform_ocr_on_directory(directory_path):
         
         # Check if it's a file and not a subdirectory
         if os.path.isfile(image_path):
-            print(f"Processing {image_path}...")
             
             # Open the image file
             image = Image.open(image_path)
