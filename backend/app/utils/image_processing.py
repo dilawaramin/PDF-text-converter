@@ -24,7 +24,7 @@ def convert_pdf_2_image(pdf_path):
     for page_num in range(len(pdf_document)):
         page = pdf_document.load_page(page_num)  # Load a page
         pix = page.get_pixmap(matrix=matrix)  # Render page to an image
-        output_path = os.path.join(output_folder, f"page_{page_num + 1}.png")
+        output_path = os.path.join(output_folder, f"page_{page_num + 1:03}.png")
         pix.save(output_path)  # Save the image
         print(f"Saved {output_path}")
     
