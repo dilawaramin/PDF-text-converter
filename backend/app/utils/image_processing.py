@@ -27,6 +27,7 @@ def convert_pdf_2_image(pdf_path):
         output_path = os.path.join(output_folder, f"page_{page_num + 1:03}.png")
         pix.save(output_path)  # Save the image
         print(f"Saved {output_path}")
+    print()
     
     # return new subdirectory that contains the images
     return output_folder

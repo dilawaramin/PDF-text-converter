@@ -93,5 +93,6 @@ def perform_ocr_on_directory(directory_path):
                 json.dump(json_data, json_file, indent=4)
             
             print(f'OCR results for {filename} saved to {output_json_file}')
-
-
+    
+    print()
+    return
