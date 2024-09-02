@@ -63,16 +63,45 @@ def image_to_pdf(images_path):
     return
 
 
+# def text_to_pdf(pdf_page:pymu.Page, json_file):
+    
+#     with open(json_file, 'r', encoding='utf-8') as json_data:
+#         data = json.load(json_data)
+        
+#         # iterate through each paragraph on a page
+#         for paragraph in data["paragraphs"]:  
+            
+#             # get the bounding box value from the paragaph dictionary
+#             bounding_box = paragraph["bounding_box"]
+            
+#             # get the coordinates of the bounding box
+#             points = [
+#                 bounding_box["x_min"],
+#                 bounding_box["y_min"],
+#                 bounding_box["x_max"],
+#                 bounding_box["y_max"]
+#             ]
+            
+#             # unpack points list and create rect object
+#             rect = pymu.Rect(*points)
+            
+#             # get the actual text from paragraph
+#             text = paragraph["text"]
+            
+#             # insert textbook into page
+#             pdf_page.insert_textbox(rect, text)
+        
+            
 def text_to_pdf(pdf_page:pymu.Page, json_file):
     
     with open(json_file, 'r', encoding='utf-8') as json_data:
         data = json.load(json_data)
         
-        # iterate through each paragraph on a page
-        for paragraph in data["paragraphs"]:  
+        # iterate through each word on a page
+        for char_data in data["characters"]:  
             
             # get the bounding box value from the paragaph dictionary
-            bounding_box = paragraph["bounding_box"]
+            bounding_box = char_data["bounding_box"]
             
             # get the coordinates of the bounding box
             points = [
@@ -84,12 +113,17 @@ def text_to_pdf(pdf_page:pymu.Page, json_file):
             
             # unpack points list and create rect object
             rect = pymu.Rect(*points)
+            point_y = points[1] + (points[3] - points[1])
+            point_single = [rect[0], point_y]
             
             # get the actual text from paragraph
-            text = paragraph["text"]
+            text = char_data["char"]
             
-            # insert textbook into page
-            pdf_page.insert_textbox(rect, text)
+            # fontsize based on textbox height
+            fontsize = points[3] - points[1]
             
+            # insert textbook into page           
+            pdf_page.insert_text(point_single, text=text, fontsize=fontsize, stroke_opacity=0,  fill_opacity=0)    
+
             
     return
