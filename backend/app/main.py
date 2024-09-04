@@ -31,4 +31,4 @@ def test_processing():
     ocr.perform_ocr_on_directory(images1)
 
     # create new pdf
-    pdfProc.image_to_pdf(images1)
+    output_path = pdfProc.image_to_pdf(images1)

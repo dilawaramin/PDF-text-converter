@@ -59,8 +59,7 @@ def image_to_pdf(images_path):
     output_path = os.path.join(images_path, 'output.pdf')
     pdf_doc.save(output_path)
     
-    
-    return
+    return output_path
 
 
 # def text_to_pdf(pdf_page:pymu.Page, json_file):

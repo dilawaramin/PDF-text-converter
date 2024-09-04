@@ -1,7 +1,8 @@
 import os
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify, send_file
 from werkzeug.utils import secure_filename
-import utils.pdf_processing as process_pdf
+import processing
+import uuid
 
 
 
@@ -22,7 +23,7 @@ ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"]
 
 
 # upload file for processing route
-@routes.route('/upload_pdf', methods=['POST'])
+@routes.route('/upload_file', methods=['POST'])
 def upload_pdf():
     
     # ensure there is a file in request
@@ -38,20 +39,38 @@ def upload_pdf():
     # Secure the filename
     filename = secure_filename(file.filename)   
     
+    # create unique filename to avoid collisions
+    unique_filename = f"{uuid.uuid4()}_{filename}"
+    
     # make sure file type is allowed
     if os.path.splitext(filename)[1] not in ALLOWED_EXTENSIONS:
         return jsonify({"Error": "Invalid file type"}), 400
     
     # create a directory with filename 
     file_directory = os.path.join(UPLOAD_FOLDER, os.path.splitext(filename)[0])
+    
+    # # Ensure the directory exists
+    # if not os.path.exists(file_directory):
+    #     os.makedirs(file_directory)
+    #     print("Directory created successfully!")
 
-    # Ensure the directory exists
-    if not os.path.exists(file_directory):
-        os.makedirs(file_directory)
-        print("Directory created successfully!")
-
-    # Save the file in the newly created directory
-    file_path = os.path.join(file_directory, filename)
-    file.save(file_path)
-
-    return jsonify({"message": "File successfully uploaded", "file_path": file_path}), 200
+    # Save the file in the newly created directory    
+    temp_file_path = os.path.join(UPLOAD_FOLDER, unique_filename)
+    file.save(temp_file_path)
+    
+    
+    try:
+        # perform OCR operations on file
+        processed_filepath = processing.process_file(temp_file_path)
+        
+        # Send the processed file back to the user
+        return send_file(processed_filepath, as_attachment=True)
+    
+    except Exception as e:
+        # catch errors
+        return jsonify({"error": str(e)}), 500
+    
+    finally:
+        # Clean up - remove the original uploaded file and processed file
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)   
