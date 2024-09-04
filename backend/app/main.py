@@ -32,3 +32,5 @@ def test_processing():
 
     # create new pdf
     output_path = pdfProc.image_to_pdf(images1)
+    
+    

@@ -5,6 +5,7 @@ env/
 # Python bytecode files
 __pycache__/
 *.py[cod]
+app/utils/__pycache__
 
 # ignore testing uploads
 uploads/
