@@ -3,11 +3,22 @@ from flask import Flask, Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 import utils.pdf_processing as process_pdf
 
+
+
 # Define a Blueprint for the routes
 routes = Blueprint('routes', __name__)
 
-UPLOAD_FOLDER = "uploads/"
+
+
+# Initialize "uploads" folder
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+# create if it doesn't exist
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+    
+# allowed file types for processing
 ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"]
+
 
 
 # upload file for processing route
@@ -37,9 +48,10 @@ def upload_pdf():
     # Ensure the directory exists
     if not os.path.exists(file_directory):
         os.makedirs(file_directory)
+        print("Directory created successfully!")
 
     # Save the file in the newly created directory
     file_path = os.path.join(file_directory, filename)
     file.save(file_path)
 
-    return
+    return jsonify({"message": "File successfully uploaded", "file_path": file_path}), 200
